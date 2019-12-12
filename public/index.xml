@@ -17,7 +17,10 @@
       <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>
       
       <guid>/projects/</guid>
-      <description></description>
+      <description>Projects Here are some projects I have been working on:
+  Project 1
+  project 2
+  </description>
     </item>
     
     <item>
@@ -74,6 +77,45 @@ Follow the following steps:
       <description>Move static content to static Jekyll has a rule that any directory not starting with _ will be copied as-is to the _site output. Hugo keeps all static content under static. You should therefore move it all there. With Jekyll, something that looked like
 ▾ &amp;lt;root&amp;gt;/ ▾ images/ logo.png  should become
 ▾ &amp;lt;root&amp;gt;/ ▾ static/ ▾ images/ logo.png  Additionally, you&#39;ll want any files that should reside at the root (such as CNAME) to be moved to static.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>/project2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/project2/</guid>
+      <description>title: “Project 2.” output: html_document —
+Farah Saleem fs7724 #defining functioons class_diag&amp;lt;-function(probs,truth){ tab&amp;lt;-table(factor(probs&amp;gt;.5,levels=c(&amp;quot;FALSE&amp;quot;,&amp;quot;TRUE&amp;quot;)),truth) acc=sum(diag(tab))/sum(tab) sens=tab[2,2]/colSums(tab)[2] spec=tab[1,1]/colSums(tab)[1] ppv=tab[2,2]/rowSums(tab)[2] if(is.numeric(truth)==FALSE &amp;amp; is.logical(truth)==FALSE) truth&amp;lt;-as.numeric(truth)-1 ord&amp;lt;-order(probs, decreasing=TRUE) probs &amp;lt;- probs[ord]; truth &amp;lt;- truth[ord] TPR=cumsum(truth)/max(1,sum(truth)) FPR=cumsum(!truth)/max(1,sum(!truth)) dup&amp;lt;-c(probs[-1]&amp;gt;=probs[-length(probs)], FALSE) TPR&amp;lt;-c(0,TPR[!dup],1); FPR&amp;lt;-c(0,FPR[!dup],1) n &amp;lt;- length(TPR) auc&amp;lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) ) data.frame(acc,sens,spec,ppv,auc) } ##Defining the dataset
+library(&amp;quot;MASS&amp;quot;) survey1&amp;lt;-na.omit(survey) This dataset is based on a college survey. The categorical variable is Exercise which has 3 groups: Left, Right and Neither.</description>
+    </item>
+    
+    <item>
+      <title>Project</title>
+      <link>/project1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/project1/</guid>
+      <description>##Introduction: I chose the datasets survey and uggs because they included college student data which was really interesting and relevant to me as a college student myself. They contain variables such as piercing,tattoos and sleeping patterns along with age, height and smoking status. I chose both of these from packages installed in R.
+library(&amp;quot;MASS&amp;quot;) library(VGAMdata) library(dplyr) ## ## Attaching package: &amp;#39;dplyr&amp;#39; ## The following object is masked from &amp;#39;package:MASS&amp;#39;: ## ## select ## The following objects are masked from &amp;#39;package:stats&amp;#39;: ## ## filter, lag ## The following objects are masked from &amp;#39;package:base&amp;#39;: ## ## intersect, setdiff, setequal, union library(ggplot2) library(tidyr) library(tidyverse) ## ── Attaching packages ───────────────────────────────────────────── tidyverse 1.</description>
+    </item>
+    
+    <item>
+      <title>Projects.Rmd</title>
+      <link>/projects/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/</guid>
+      <description>  Project 1 project 2  </description>
+    </item>
+    
+    <item>
+      <title>Projects.Rmd</title>
+      <link>/untitled/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/untitled/</guid>
+      <description>  Project 1 Project 2  </description>
     </item>
     
   </channel>
