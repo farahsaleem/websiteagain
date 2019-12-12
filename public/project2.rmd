@@ -1,0 +1,245 @@
+
+title: "Project 2. "
+output: html_document
+---
+
+```{r setup, include=FALSE}
+```
+
+
+## Farah Saleem fs7724
+
+```{R}
+#defining functioons
+class_diag<-function(probs,truth){
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+
+
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+```
+
+##Defining the dataset
+```{R}
+library("MASS")
+survey1<-na.omit(survey)
+
+```
+
+*This dataset is based on a college survey. The categorical variable is Exercise which has 3 groups: Left, Right and Neither. The binary variable is Sex, with groups: Male and Female. The numeric variables are Pulse (number of heart beats per minute), Height(cm), Age(years) and Number of people with Right Writing Hands (Wr.Hnd).*
+
+##MANOVA TEST
+```{R}
+library(ggplot2)
+#Manova 
+man1<-manova(cbind(Age,Pulse)~Sex, data=survey1)
+summary(man1)
+#Type 1 error
+1-(0.95^7)
+#Bonferroni correction
+0.05/7
+##Testing multivariate normality for manova assumptions
+ggplot(survey1, aes(x = Age, y = Pulse)) +
+  geom_point(alpha = .5) + geom_density_2d(h=2) + coord_fixed() + facet_wrap(~Exer)
+```
+*A one-way multivariate analysis of variance (MANOVA) was conducted to determine if for each Age and Pulse the means of each Sex category were different. The null hypothesis here is For Age and pulse, means of males and females are equal and the alternate hypothesis is that For at least one DV, at least one sex group mean is different. From the results (p value) here it is evident that for for Age and Pulse the means for each sex category are equal, so the null hypothesis is true. If this was significant, 2 Anovas would be run as well, and 4 post Hoc tests due to 4 groups of exercise present. There are 7 total tests. The possibility of type 1 error would be 0.301 and with bonferroni correction it will be 0.00714. The assumptions of a MANOVA are that they are random samples, independent observations and that DVs have a multivariate normality, which isnt necessarily being met as shown in the plot above.*
+
+##Randomization Test
+```{R}
+library(dplyr)
+#2 sample t test
+t.test(data=survey1,Height~Sex)
+diff<-vector() 
+for(i in 1:10000){
+  rand=survey1
+  rand$Height=sample(rand$Height)
+  diff[i]<- mean(rand[rand$Sex=='Female',]$Height)-mean(rand[rand$Sex=='Male',]$Height)
+}
+  
+    
+data.frame(diff)%>%
+ggplot(aes(diff))+geom_histogram(aes(y=..density..), bins=30)+
+  stat_function(fun=dt,args=list(df=24),geom="line")
+ quantile(diff,.975)
+  qt(.975, df=24)
+```
+*The randomization test performed here is a 2 sample T test, where the null hypothesis is that the means of Height do not differ across the two sexes, and the alternative hypothesis is that there is a difference between the 2 sexes. The test results show the p value to be 2.2 e-16 which means that thhere is a significant difference between the heights of male and females, with the mean of females being 165 cm and males being 178.8 cm. From the graph we can interpret that the null distribution and the t statistic within it. *
+
+##Linear Regression
+```{R}
+library(sandwich); library(lmtest)
+#mean centering variables
+Height_c<-survey$Height-mean(survey1$Height)
+Age_c<-survey$Age-mean(survey1$Age)
+#linear regression model
+fit<-lm(Height~ Exer*Age, data=survey1)
+summary(fit)
+#plot
+
+ggplot(survey1, aes(x=Age, y=Height,group=Sex))+geom_point(aes(color=Sex))+
+ geom_smooth(method="lm",formula=y~1,se=F,fullrange=T,aes(color=Sex))+
+theme(legend.position=c(.9,.19))+xlab("Age")
+
+#checking for assumptions of linearity, normality and homoskedasticity 
+resids<-fit$residuals
+fitvals<-fit$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, color='red')
+ggplot()+geom_histogram(aes(resids), bins=20)
+
+#robust standard errors 
+summary(fit)$coef[,1:2]
+coeftest(fit, vcov = vcovHC(fit))[,1:2]
+#proportion of variation explained in the outcome explained by the model
+summary(fit)$r.sq
+```
+*Interpreting the coefficients, we see that when exercise and age is held constant, the height would be 177. When there is no exercise, the height is about 14cm lesser, with some its 7 cm lesser. With Age and exercise interacting, we see that no exercise and age means 0.4cm greater height, while with some exercise and age the height is greater by 0.12cm. the standard errors change with the coeftest because its a different sampling method and the outliers are removed. The assumption plots show that the assumptions have been met. The proportion of variation in the response variable explained by the overall model is 0.0601 as explained by the r squared value.*
+
+##Bootstrapping
+```{R}
+#bootstrapped standard errors
+boot_dat<-survey[sample(nrow(survey1),replace=TRUE),]
+samp_distn<-replicate(5000, {
+ boot_dat<-survey[sample(nrow(survey),replace=TRUE),]
+ fit<-lm(Height~Exer+Age,data=boot_dat)
+ coef(fit)
+})
+samp_distn%>%t%>%as.data.frame%>%summarize_all(sd)
+```
+*Compared to the original SDs, all 3 are smaller with exercise none being 2.35, exercise some being 1.4,and age is 0.089.Compared to the robust SD's, these bootstrapped sds are once again much smaller *
+
+
+##Logistic Regression
+```{R}
+
+
+library(ggplot2)
+library(tidyverse)
+library(knitr)
+#logistic regression
+fit4<-glm(Sex~Pulse+Height,data=survey1,family=binomial(link="logit"))
+coeftest(fit4)
+exp(coef(fit4))
+#confusion matrix
+prob<- predict(fit4, type = "response")
+prob
+class_diag(prob, survey1$Sex)
+table(predict = as.numeric(prob>0.5), truth = survey1$Sex)%>%addmargins
+
+
+#ROC plot 
+library(plotROC)
+ROCplot<-ggplot(survey1)+geom_roc(aes(d=Sex,m=prob), n.cuts=0) 
+ROCplot
+calc_auc(ROCplot)
+
+#auc, accuracy,tpr
+prob<-predict(fit4,type="response")
+class_diag<-function(probs,truth){
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+
+
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+class_diag(prob,survey1$Sex)
+
+#density plot
+odds<-function(p)p/(1-p)
+p<-seq(0,1,by=.1)
+logit<-function(p)log(odds(p))
+cbind(p, odds=odds(p),logit=logit(p))%>%round(4)
+
+survey1$logit<-predict(fit4) 
+survey1$outcome<-factor(survey1$Sex,levels=c("Male","Female"))
+ggplot(survey1,aes(logit, fill=as.factor(Sex)))+geom_density(alpha=.3)+
+geom_vline(xintercept=0,lty=2)
+
+                  
+
+#10 fold CV
+set.seed(1234) 
+k = 10
+data1 <- survey[sample(nrow(survey)), ]
+folds <- cut(seq(1:nrow(survey)), breaks = k, labels = F) 
+diags <- NULL
+for (i in 1:k) {
+train <- data1[folds != i, ]
+test <- data1[folds == i, ]
+truth <- test$Sex
+fit5 <- glm(Sex ~ Age+ Height , data = survey, family = "binomial") 
+probs <- predict(fit5, newdata = test, type = "response") 
+preds <- ifelse(probs > 0.5, 1, 0)
+diags <- rbind(diags, class_diag(probs, truth)) 
+}
+diags %>% summarize_all(mean)
+
+```
+*The null hypothesis for this regression are :The  that with Controlling for Pulse, Height does not explain variation in sex. Controlling for Height, Pulse does not explain variation in sex. From the results it is evident that Height explains a variation in sex, of about 0.27 per unit as indicated by the coefficient estimate. Pulse does not explain variation in the sexes, with the coefficient estimate being -0.06. Accuracy is 0.85 which explains the proportion of classified cases. Sensitivity is 0.833 which explains the true positive rate.specifity is0.869 which is the true negative rate. ppv is 0.8664 which is the positive predicted value, auc 0.909 is which is why the roc graph is not a perfect curve. average out of sample acc is 08.19, sens is 0.784, spec is 0.85, ppv is 0.84.  *
+
+#LASSO
+```{R}
+library(glmnet)
+
+y<-as.matrix(survey1$Wr.Hnd)
+x<-survey1%>%dplyr::select(Age,NW.Hnd,Height,Pulse)%>%mutate_all(scale)%>%as.matrix
+cv<-cv.glmnet(x,y)
+lasso1<-glmnet(x,y,lambda=cv$lambda.1se)
+coef(lasso1)
+
+
+#CV
+set.seed(1234)
+k=10
+data2<-survey1[sample(nrow(survey1)),] 
+folds<-cut(seq(1:nrow(survey1)),breaks=k,labels=F)
+diags<-NULL
+for(i in 1:k){
+ train<-data2[folds!=i,]
+ test<-data2[folds==i,]
+ fit5<-lm(Wr.Hnd~NW.Hnd+Height,data=survey1)
+ yhat<-predict(fit,newdata=test)
+ diags<-mean((test$Wr.Hnd-yhat)^2)
+}
+mean(diags)
+summary(fit5)
+
+```
+*Variables chosen are Age, NW Hnd, Height and Pulse to see the effect on the number of Writing Hnd, from the results we can see the NW Hnd and Height are the ones that have been retained/have an effect while Age and Pulse do not.  The residual standard error of 0.4938  is smaller than the standard error obtained from the 10 fold CV which was 0.819 indicating a better fit. *

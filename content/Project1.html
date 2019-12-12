@@ -1,0 +1,265 @@
+---
+title: "Project"
+author: "Farah Saleem"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+
+<p>##Introduction: I chose the datasets survey and uggs because they included college student data which was really interesting and relevant to me as a college student myself. They contain variables such as piercing,tattoos and sleeping patterns along with age, height and smoking status. I chose both of these from packages installed in R.</p>
+<pre class="r"><code>library(&quot;MASS&quot;)
+library(VGAMdata)
+library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:MASS&#39;:
+## 
+##     select</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(tidyr)
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ tibble  2.1.3     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.4.0
+## ✓ purrr   0.3.3</code></pre>
+<pre><code>## ── Conflicts ──────────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## x dplyr::select() masks MASS::select()</code></pre>
+<pre class="r"><code>survey1&lt;-survey%&gt;%mutate(Sex=tolower(Sex))
+fs&lt;-survey1%&gt;%pivot_wider(names_from=&quot;Sex&quot;, values_from=&quot;Smoke&quot;)
+survey2&lt;-fs%&gt;%pivot_longer(c(&quot;female&quot;,&quot;male&quot;), names_to=&quot;Sex&quot;, values_to=&quot;Smoke&quot;)
+fs&lt;-full_join(survey2,ugss,by=c(&quot;Age&quot;=&quot;age&quot;,&quot;Sex&quot;=&quot;sex&quot;))</code></pre>
+<pre><code>## Warning: Column `Sex`/`sex` joining character vector and factor, coercing into
+## character vector</code></pre>
+<pre class="r"><code>fs&lt;-fs%&gt;%dplyr::select(-`NA`)</code></pre>
+<p>##Tidying: Although the dataset was already tidy, i used pivot_wider to use names from sex (male and female) to become separate columns with values from smoke (smoking status) in these columns. I then undid this by using pivot_longer. I changed the uppercase of Sex in survey to lowercase, so that the data could be joined.
+##Joining: I used full_join for these data sets because this retains all the original data, in case I wanted to create more plots/correlation charts for future purposes.</p>
+<pre class="r"><code>library(dplyr)
+fs%&gt;%filter(Clap==&quot;Left&quot;)</code></pre>
+<pre><code>## # A tibble: 218 x 39
+##    Wr.Hnd NW.Hnd W.Hnd Fold  Pulse Clap  Exer  Height M.I     Age Sex   Smoke
+##     &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt; &lt;int&gt; &lt;fct&gt; &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt; &lt;dbl&gt; &lt;chr&gt; &lt;fct&gt;
+##  1   18.5   18   Right R on…    92 Left  Some    173  Metr…  18.2 fema… Never
+##  2   18.5   18   Right R on…    92 Left  Some    173  Metr…  18.2 male  &lt;NA&gt; 
+##  3   19.5   20.5 Left  R on…   104 Left  None    178. Impe…  17.6 fema… &lt;NA&gt; 
+##  4   19.5   20.5 Left  R on…   104 Left  None    178. Impe…  17.6 male  Regul
+##  5   21     21   Right R on…    68 Left  Freq     NA  &lt;NA&gt;   18.2 fema… &lt;NA&gt; 
+##  6   21     21   Right R on…    68 Left  Freq     NA  &lt;NA&gt;   18.2 male  Never
+##  7   20.5   20.5 Right L on…    NA Left  Some    190. Impe…  19.8 fema… &lt;NA&gt; 
+##  8   20.5   20.5 Right L on…    NA Left  Some    190. Impe…  19.8 male  Never
+##  9   21.5   22   Right R on…    72 Left  Freq    190. Impe…  17.9 fema… &lt;NA&gt; 
+## 10   21.5   22   Right R on…    72 Left  Freq    190. Impe…  17.9 male  Never
+## # … with 208 more rows, and 27 more variables: eyes &lt;fct&gt;, piercings &lt;int&gt;,
+## #   pierced &lt;fct&gt;, tattoos &lt;int&gt;, tattooed &lt;fct&gt;, glasses &lt;fct&gt;, sleep &lt;int&gt;,
+## #   study &lt;int&gt;, tv &lt;int&gt;, movies &lt;int&gt;, movies3m &lt;fct&gt;, sport &lt;fct&gt;,
+## #   entertainment &lt;fct&gt;, fruit &lt;fct&gt;, income &lt;dbl&gt;, rent &lt;dbl&gt;, clothes &lt;dbl&gt;,
+## #   hair &lt;dbl&gt;, tobacco &lt;int&gt;, smokes &lt;fct&gt;, alcohol &lt;dbl&gt;, buy.alcohol &lt;fct&gt;,
+## #   sendtxt &lt;int&gt;, receivetxt &lt;int&gt;, txts &lt;fct&gt;, country &lt;fct&gt;, status &lt;fct&gt;</code></pre>
+<pre class="r"><code>fs%&gt;%slice(1:3)                 </code></pre>
+<pre><code>## # A tibble: 3 x 39
+##   Wr.Hnd NW.Hnd W.Hnd Fold  Pulse Clap  Exer  Height M.I     Age Sex   Smoke
+##    &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt; &lt;int&gt; &lt;fct&gt; &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt; &lt;dbl&gt; &lt;chr&gt; &lt;fct&gt;
+## 1   18.5   18   Right R on…    92 Left  Some    173  Metr…  18.2 fema… Never
+## 2   18.5   18   Right R on…    92 Left  Some    173  Metr…  18.2 male  &lt;NA&gt; 
+## 3   19.5   20.5 Left  R on…   104 Left  None    178. Impe…  17.6 fema… &lt;NA&gt; 
+## # … with 27 more variables: eyes &lt;fct&gt;, piercings &lt;int&gt;, pierced &lt;fct&gt;,
+## #   tattoos &lt;int&gt;, tattooed &lt;fct&gt;, glasses &lt;fct&gt;, sleep &lt;int&gt;, study &lt;int&gt;,
+## #   tv &lt;int&gt;, movies &lt;int&gt;, movies3m &lt;fct&gt;, sport &lt;fct&gt;, entertainment &lt;fct&gt;,
+## #   fruit &lt;fct&gt;, income &lt;dbl&gt;, rent &lt;dbl&gt;, clothes &lt;dbl&gt;, hair &lt;dbl&gt;,
+## #   tobacco &lt;int&gt;, smokes &lt;fct&gt;, alcohol &lt;dbl&gt;, buy.alcohol &lt;fct&gt;,
+## #   sendtxt &lt;int&gt;, receivetxt &lt;int&gt;, txts &lt;fct&gt;, country &lt;fct&gt;, status &lt;fct&gt;</code></pre>
+<pre class="r"><code>fs%&gt;%arrange(Age)</code></pre>
+<pre><code>## # A tibble: 2,516 x 39
+##    Wr.Hnd NW.Hnd W.Hnd Fold  Pulse Clap  Exer  Height M.I     Age Sex   Smoke
+##     &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt; &lt;int&gt; &lt;fct&gt; &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt; &lt;dbl&gt; &lt;chr&gt; &lt;fct&gt;
+##  1   19.5   19.5 Left  R on…    66 Left  Some      NA &lt;NA&gt;   16.8 fema… &lt;NA&gt; 
+##  2   19.5   19.5 Left  R on…    66 Left  Some      NA &lt;NA&gt;   16.8 male  Never
+##  3   18     13.3 Right L on…    87 Neit… None      NA &lt;NA&gt;   16.9 fema… &lt;NA&gt; 
+##  4   18     13.3 Right L on…    87 Neit… None      NA &lt;NA&gt;   16.9 male  Occas
+##  5   18.5   18   Right R on…    64 Right Freq      NA &lt;NA&gt;   16.9 fema… Never
+##  6   18.5   18   Right R on…    64 Right Freq      NA &lt;NA&gt;   16.9 male  &lt;NA&gt; 
+##  7   18.5   18   Right L on…    88 Right Some     160 Metr…  16.9 fema… Never
+##  8   18.5   18   Right L on…    88 Right Some     160 Metr…  16.9 male  &lt;NA&gt; 
+##  9   16.2   16.4 Right R on…    NA Right Freq     172 Metr…  17   fema… Occas
+## 10   16.2   16.4 Right R on…    NA Right Freq     172 Metr…  17   male  &lt;NA&gt; 
+## # … with 2,506 more rows, and 27 more variables: eyes &lt;fct&gt;, piercings &lt;int&gt;,
+## #   pierced &lt;fct&gt;, tattoos &lt;int&gt;, tattooed &lt;fct&gt;, glasses &lt;fct&gt;, sleep &lt;int&gt;,
+## #   study &lt;int&gt;, tv &lt;int&gt;, movies &lt;int&gt;, movies3m &lt;fct&gt;, sport &lt;fct&gt;,
+## #   entertainment &lt;fct&gt;, fruit &lt;fct&gt;, income &lt;dbl&gt;, rent &lt;dbl&gt;, clothes &lt;dbl&gt;,
+## #   hair &lt;dbl&gt;, tobacco &lt;int&gt;, smokes &lt;fct&gt;, alcohol &lt;dbl&gt;, buy.alcohol &lt;fct&gt;,
+## #   sendtxt &lt;int&gt;, receivetxt &lt;int&gt;, txts &lt;fct&gt;, country &lt;fct&gt;, status &lt;fct&gt;</code></pre>
+<pre class="r"><code>fs%&gt;%dplyr::select(1,2)</code></pre>
+<pre><code>## # A tibble: 2,516 x 2
+##    Wr.Hnd NW.Hnd
+##     &lt;dbl&gt;  &lt;dbl&gt;
+##  1   18.5   18  
+##  2   18.5   18  
+##  3   19.5   20.5
+##  4   19.5   20.5
+##  5   18     13.3
+##  6   18     13.3
+##  7   18.8   18.9
+##  8   18.8   18.9
+##  9   20     20  
+## 10   20     20  
+## # … with 2,506 more rows</code></pre>
+<pre class="r"><code>fs%&gt;%mutate(average=Wr.Hnd/NW.Hnd)</code></pre>
+<pre><code>## # A tibble: 2,516 x 40
+##    Wr.Hnd NW.Hnd W.Hnd Fold  Pulse Clap  Exer  Height M.I     Age Sex   Smoke
+##     &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt; &lt;int&gt; &lt;fct&gt; &lt;fct&gt;  &lt;dbl&gt; &lt;fct&gt; &lt;dbl&gt; &lt;chr&gt; &lt;fct&gt;
+##  1   18.5   18   Right R on…    92 Left  Some    173  Metr…  18.2 fema… Never
+##  2   18.5   18   Right R on…    92 Left  Some    173  Metr…  18.2 male  &lt;NA&gt; 
+##  3   19.5   20.5 Left  R on…   104 Left  None    178. Impe…  17.6 fema… &lt;NA&gt; 
+##  4   19.5   20.5 Left  R on…   104 Left  None    178. Impe…  17.6 male  Regul
+##  5   18     13.3 Right L on…    87 Neit… None     NA  &lt;NA&gt;   16.9 fema… &lt;NA&gt; 
+##  6   18     13.3 Right L on…    87 Neit… None     NA  &lt;NA&gt;   16.9 male  Occas
+##  7   18.8   18.9 Right R on…    NA Neit… None    160  Metr…  20.3 fema… &lt;NA&gt; 
+##  8   18.8   18.9 Right R on…    NA Neit… None    160  Metr…  20.3 male  Never
+##  9   20     20   Right Neit…    35 Right Some    165  Metr…  23.7 fema… &lt;NA&gt; 
+## 10   20     20   Right Neit…    35 Right Some    165  Metr…  23.7 male  Never
+## # … with 2,506 more rows, and 28 more variables: eyes &lt;fct&gt;, piercings &lt;int&gt;,
+## #   pierced &lt;fct&gt;, tattoos &lt;int&gt;, tattooed &lt;fct&gt;, glasses &lt;fct&gt;, sleep &lt;int&gt;,
+## #   study &lt;int&gt;, tv &lt;int&gt;, movies &lt;int&gt;, movies3m &lt;fct&gt;, sport &lt;fct&gt;,
+## #   entertainment &lt;fct&gt;, fruit &lt;fct&gt;, income &lt;dbl&gt;, rent &lt;dbl&gt;, clothes &lt;dbl&gt;,
+## #   hair &lt;dbl&gt;, tobacco &lt;int&gt;, smokes &lt;fct&gt;, alcohol &lt;dbl&gt;, buy.alcohol &lt;fct&gt;,
+## #   sendtxt &lt;int&gt;, receivetxt &lt;int&gt;, txts &lt;fct&gt;, country &lt;fct&gt;, status &lt;fct&gt;,
+## #   average &lt;dbl&gt;</code></pre>
+<pre class="r"><code>fs%&gt;% summarize_all(n_distinct)</code></pre>
+<pre><code>## # A tibble: 1 x 39
+##   Wr.Hnd NW.Hnd W.Hnd  Fold Pulse  Clap  Exer Height   M.I   Age   Sex Smoke
+##    &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+## 1     62     70     3     4    44     4     4     69     3   109     2     5
+## # … with 27 more variables: eyes &lt;int&gt;, piercings &lt;int&gt;, pierced &lt;int&gt;,
+## #   tattoos &lt;int&gt;, tattooed &lt;int&gt;, glasses &lt;int&gt;, sleep &lt;int&gt;, study &lt;int&gt;,
+## #   tv &lt;int&gt;, movies &lt;int&gt;, movies3m &lt;int&gt;, sport &lt;int&gt;, entertainment &lt;int&gt;,
+## #   fruit &lt;int&gt;, income &lt;int&gt;, rent &lt;int&gt;, clothes &lt;int&gt;, hair &lt;int&gt;,
+## #   tobacco &lt;int&gt;, smokes &lt;int&gt;, alcohol &lt;int&gt;, buy.alcohol &lt;int&gt;,
+## #   sendtxt &lt;int&gt;, receivetxt &lt;int&gt;, txts &lt;int&gt;, country &lt;int&gt;, status &lt;int&gt;</code></pre>
+<pre class="r"><code>fs%&gt;% group_by(Clap)%&gt;%summarize(meanage=mean(Age,na.rm=T))</code></pre>
+<pre><code>## Warning: Factor `Clap` contains implicit NA, consider using
+## `forcats::fct_explicit_na`</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##   Clap    meanage
+##   &lt;fct&gt;     &lt;dbl&gt;
+## 1 Left       20.4
+## 2 Neither    19.3
+## 3 Right      19.8
+## 4 &lt;NA&gt;       25.7</code></pre>
+<pre class="r"><code>fs%&gt;% group_by(Sex)%&gt;% summarize(meanage=mean(Age,na.rm=T),sdage=sd(Age,na.rm=T),varAge=var(Age,na.rm=T),meanWr.Hnd=mean(Wr.Hnd,na.rm=T),sdWr=sd(Wr.Hnd,na.rm=T),varwr=var(Wr.Hnd,na.rm=T),meanNW=mean(NW.Hnd,na.rm=T),sdNW=sd(NW.Hnd, na.rm=T),varNW=var(NW.Hnd,na.rm=T),mnNW=min(NW.Hnd,na.rm=T))</code></pre>
+<pre><code>## # A tibble: 2 x 11
+##   Sex    meanage sdage varAge meanWr.Hnd  sdWr varwr meanNW  sdNW varNW  mnNW
+##   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 female    20.2  3.51   12.3       19.4  2.09  4.36   19.3  1.97  3.90  12.5
+## 2 male      20.1  3.97   15.7       19.2  2.04  4.16   19.1  1.91  3.65  12.5</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<p>##Wrangling: Filtering with clap=left, filtered out all the claps apart from those that were left, it also showed that most left clap folded with right hand. Slicing 1:3, sliced out rows 1-3 from the rest of the data.Arranging by age organized the data according to ascending order of age. Select (1,2) allowed selection of the first 2 columns. Mutate (average=Wr.Hnd/NW.Hnd) created another column with the average of wr.hnd values divided by nw.hnd values. summarize_all(n_distinct) summarized all the values that were distinct. Grouping by clap using summarize to create mean age, showed the mean ages in every clap group. Grouping by sex and creating statistics mean,var,sd of age, wr.hnd, nw.hnd showed the result of these statistics in male and female groups separately.</p>
+<pre class="r"><code>ggplot(fs, aes(x = Pulse, y = Age, fill=Exer))+  geom_bar(alpha = 3/5,stat=&quot;summary&quot;,fun.y=&quot;mean&quot;, position=&quot;dodge&quot;)+  geom_errorbar(stat=&quot;summary&quot;,position=&quot;dodge&quot;)+ggtitle(&quot;Pulse by Age and Exercise frequence&quot;)</code></pre>
+<pre><code>## Warning: Removed 570 rows containing non-finite values (stat_summary).
+
+## Warning: Removed 570 rows containing non-finite values (stat_summary).</code></pre>
+<pre><code>## No summary function supplied, defaulting to `mean_se()</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+##This graph shows the relationship of Age and Pulse separated by Exercise. since this is data from college students, the age is usually around 20s, apart from one outlier in his sixties. Those who frequently exercise seem to have a pulse in the middle range around 70, while those who don’t exercise at all have a higher unhealthier pulse. Those who exercise some times have a varying range of pulse, from a really low value of around 12 to high around 100.</p>
+<pre class="r"><code>plot2&lt;-ggplot(na.omit(fs)) + 
+  geom_point(mapping = aes(x = Age, y = Smoke),na.rm=TRUE) + 
+  facet_wrap(~Sex, nrow = 2)
+plot2+ggtitle(&quot;Smoking frequency in male and females by Age&quot;)</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>##This plot shows that none of the females smoked, so more males smoked than females. It also showed that ages 20 and younger smoke more than those above 20, and compared to regular smokers, there are more males that do not smoke at all.</p>
+<pre class="r"><code>fs1&lt;-fs%&gt;%dplyr::select(-piercings,-pierced,-tattoos,-glasses)
+fs_nums&lt;-fs1%&gt;%select_if(is.numeric)%&gt;%scale
+rownames(fs_nums)&lt;-fs$Exer
+fs_pca&lt;-princomp(na.omit(fs_nums), cor = TRUE, scores= TRUE)
+names(fs_pca)</code></pre>
+<pre><code>## [1] &quot;sdev&quot;     &quot;loadings&quot; &quot;center&quot;   &quot;scale&quot;    &quot;n.obs&quot;    &quot;scores&quot;   &quot;call&quot;</code></pre>
+<pre class="r"><code>summary(fs_pca,loadings=T)</code></pre>
+<pre><code>## Importance of components:
+##                           Comp.1    Comp.2     Comp.3     Comp.4     Comp.5
+## Standard deviation     1.6216871 1.4565938 1.27009403 1.17387146 1.06026305
+## Proportion of Variance 0.1546982 0.1248038 0.09489052 0.08105731 0.06612693
+## Cumulative Proportion  0.1546982 0.2795020 0.37439254 0.45544984 0.52157677
+##                            Comp.6     Comp.7     Comp.8     Comp.9    Comp.10
+## Standard deviation     1.03973830 1.03112390 0.98939090 0.97756271 0.94979351
+## Proportion of Variance 0.06359151 0.06254215 0.05758202 0.05621346 0.05306516
+## Cumulative Proportion  0.58516828 0.64771043 0.70529245 0.76150591 0.81457107
+##                           Comp.11    Comp.12    Comp.13    Comp.14    Comp.15
+## Standard deviation     0.89981095 0.84614955 0.81613827 0.74414134 0.59477895
+## Proportion of Variance 0.04762704 0.04211583 0.03918128 0.03257331 0.02080953
+## Cumulative Proportion  0.86219812 0.90431394 0.94349522 0.97606853 0.99687806
+##                            Comp.16      Comp.17
+## Standard deviation     0.208164533 0.0986939367
+## Proportion of Variance 0.002548969 0.0005729702
+## Cumulative Proportion  0.999427030 1.0000000000
+## 
+## Loadings:
+##            Comp.1 Comp.2 Comp.3 Comp.4 Comp.5 Comp.6 Comp.7 Comp.8 Comp.9
+## Wr.Hnd      0.596                                                        
+## NW.Hnd      0.596                                                        
+## Pulse             -0.127  0.110  0.475  0.184  0.344  0.313         0.243
+## Height      0.526                                                        
+## Age                0.169 -0.235 -0.476 -0.130 -0.254 -0.152              
+## sleep                    -0.168  0.289  0.203  0.185 -0.157  0.260 -0.693
+## study              0.130               -0.424 -0.139  0.333  0.728       
+## tv                -0.111 -0.157  0.402        -0.382 -0.405  0.323  0.170
+## movies            -0.181 -0.281  0.167 -0.157        -0.181 -0.162 -0.279
+## income                   -0.511        -0.166  0.371 -0.183         0.311
+## rent               0.144 -0.224 -0.319  0.207  0.338  0.232  0.331 -0.251
+## clothes           -0.173 -0.568        -0.159         0.148 -0.115  0.154
+## hair                     -0.251  0.113        -0.332  0.651 -0.269 -0.171
+## tobacco                  -0.169 -0.237  0.580                0.190  0.340
+## alcohol           -0.142 -0.202         0.494 -0.488         0.106       
+## sendtxt           -0.637  0.104 -0.213                       0.108       
+## receivetxt        -0.637  0.122 -0.213                       0.100       
+##            Comp.10 Comp.11 Comp.12 Comp.13 Comp.14 Comp.15 Comp.16 Comp.17
+## Wr.Hnd                                              0.354           0.712 
+## NW.Hnd                                              0.383          -0.700 
+## Pulse      -0.201  -0.141  -0.504  -0.309          -0.150                 
+## Height                                             -0.833                 
+## Age                -0.156  -0.613  -0.401                                 
+## sleep       0.435                  -0.214                                 
+## study               0.175   0.128  -0.288                                 
+## tv                         -0.361   0.466                                 
+## movies     -0.668   0.466          -0.157                                 
+## income      0.166  -0.170   0.143  -0.121   0.588                         
+## rent       -0.382  -0.219  -0.136   0.479                                 
+## clothes     0.118           0.141          -0.712                         
+## hair        0.234   0.188  -0.170   0.217   0.333                         
+## tobacco     0.149   0.623                                                 
+## alcohol    -0.230  -0.430   0.334  -0.276                                 
+## sendtxt                                                    -0.705         
+## receivetxt                                                  0.708</code></pre>
+<pre class="r"><code>eigval&lt;-fs_pca$sdev^2 
+varprop=round(eigval/sum(eigval),2)
+ggplot()+geom_bar(aes(y=varprop,x=1:17),stat=&quot;identity&quot;)+xlab(&quot;&quot;)+geom_path(aes(y=varprop,x=1:17))+  geom_text(aes(x=1:17,y=varprop,label=round(varprop,2)),vjust=1,col=&quot;white&quot;,size=5)+  scale_y_continuous(breaks=seq(0,.6,.2),labels = scales::percent)+  scale_x_continuous(breaks=1:10)</code></pre>
+<pre><code>## Warning in min(diff(sort(x))): no non-missing arguments to min; returning Inf</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>round(cumsum(eigval)/sum(eigval),2)</code></pre>
+<pre><code>##  Comp.1  Comp.2  Comp.3  Comp.4  Comp.5  Comp.6  Comp.7  Comp.8  Comp.9 Comp.10 
+##    0.15    0.28    0.37    0.46    0.52    0.59    0.65    0.71    0.76    0.81 
+## Comp.11 Comp.12 Comp.13 Comp.14 Comp.15 Comp.16 Comp.17 
+##    0.86    0.90    0.94    0.98    1.00    1.00    1.00</code></pre>
+<pre class="r"><code>eigval</code></pre>
+<pre><code>##      Comp.1      Comp.2      Comp.3      Comp.4      Comp.5      Comp.6 
+## 2.629868892 2.121665424 1.613138837 1.377974200 1.124157732 1.081055742 
+##      Comp.7      Comp.8      Comp.9     Comp.10     Comp.11     Comp.12 
+## 1.063216490 0.978894361 0.955628847 0.902107704 0.809659738 0.715969061 
+##     Comp.13     Comp.14     Comp.15     Comp.16     Comp.17 
+## 0.666081679 0.553746330 0.353761997 0.043332473 0.009740493</code></pre>
+<pre class="r"><code>ggplot()+geom_point(aes(fs_pca$scores[,1], fs_pca$scores[,2]))+xlab(&quot;PC1&quot;)+ylab(&quot;PC2&quot;)</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+<pre class="r"><code>fs_pca$loadings[1:7,1:2]%&gt;%as.data.frame%&gt;%rownames_to_column%&gt;%
+  ggplot()+geom_hline(aes(yintercept=0),lty=2)+
+  geom_vline(aes(xintercept=0),lty=2)+ylab(&quot;PC2&quot;)+xlab(&quot;PC1&quot;)+
+  geom_segment(aes(x=0,y=0,xend=Comp.1,yend=Comp.2),arrow=arrow(),col=&quot;red&quot;)+
+  geom_label(aes(x=Comp.1*1.1,y=Comp.2*1.1,label=rowname))</code></pre>
+<p><img src="/Project1_files/figure-html/unnamed-chunk-5-3.png" width="672" /></p>
+<p>##The first graph shows that pc1 and pc2 count for 0.27 of the total variance.The 2nd graph depends on the angle between the vectors, hence it shows that height and study are negatively correlated, while W.hnd,NW.Hnd and height are almost reduntant. PC1 and PC2 are not directly correlated because the increase of pc1 does not affect the increase pf pc2.</p>
