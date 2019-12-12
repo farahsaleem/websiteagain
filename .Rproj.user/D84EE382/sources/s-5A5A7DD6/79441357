@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1576123177413.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3465158025",
+    "id" : "79441357",
+    "lastKnownWriteTime" : 1576180438,
+    "last_content_update" : 1576180438657,
+    "path" : "~/Desktop/website/content/blog/2019-12-11-blog-1.Rmd",
+    "project_path" : "content/blog/2019-12-11-blog-1.Rmd",
+    "properties" : {
+        "cursorPosition" : "8,3",
+        "last_setup_crc32" : "5A5A7DD6bb338d19",
+        "scrollLine" : "2"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

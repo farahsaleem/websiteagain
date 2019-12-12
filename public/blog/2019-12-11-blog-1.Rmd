@@ -1,0 +1,43 @@
+---
+title: 'Learning Python '
+author: Farah Saleem
+date: '2019-12-11'
+slug: blog-1
+categories: []
+tags: []
+description: ''
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+![](/blog/2019-12-11-blog-1_files/python.jpg)
+
+Something that I was looking forward to when taking SDS 348 was learning how to use python. Python is a programming language that can be used for websites, web applications and common programming tasks.  
+The best thing about Python is that it can be used on various platforms, one of them being R studio. This can be done by using the package "reticulate" on R as demonstrated below. 
+
+```{R}
+library(reticulate)
+```
+Now that reticulate is installed, we can use python on R studio! Python has basic built in functions such as creating lists, the function below shows the length of the list created, which is 3. 
+```{python}
+x=range(2,8,2)
+x=list(x)
+len(x)
+```
+
+The function below is the insert function, used to insert an element at any location in a list, here the number 5 is inserted at the 4th position, R positions start from 0.
+```{python}
+list1=[1,2,3,4]
+list1.insert(4,5)
+list1[4]
+list1
+```
+R also has other functions, which are very simple to use such as append: which adds a number to the list, reverse which sorts the list in opposite order. Both of these functions are demonstrated below!
+```{python}
+list1.append(6)
+list1
+list1.reverse()
+list1
+```
+```

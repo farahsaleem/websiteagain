@@ -1,17 +1,19 @@
 {
     "collab_server" : "",
     "contents" : "",
-    "created" : 1576115046918.000,
+    "created" : 1576124009307.000,
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "4232402096",
-    "id" : "F5971E5F",
+    "hash" : "0",
+    "id" : "50DB1843",
     "lastKnownWriteTime" : 1575680899,
     "last_content_update" : 1575680899,
     "path" : "~/Desktop/website/content/Project1.Rmd",
     "project_path" : "content/Project1.Rmd",
     "properties" : {
+        "cursorPosition" : "11,0",
+        "scrollLine" : "2"
     },
     "read_only" : false,
     "read_only_alternatives" : [

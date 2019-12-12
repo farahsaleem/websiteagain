@@ -1,8 +1,8 @@
 /* Main page with stikky-footer */
 html, body {
   height: 100%;
-  background-color: #fff;
-  font-family: 'Source Sans Pro', sans-serif;
+  background-color: #ffb6c1;
+  font-family: 'American Typewriter', serif;
   /* The html and body elements cannot have any padding or margin. */
   border-top: 3px solid #27A822;
 }
@@ -23,7 +23,7 @@ html, body {
   margin-bottom: 10px;
 }
 .navbar-default {
-  background-color: #ffffff;
+  background-color: #99ffcc;
   border-color: #ffffff;
 }
 .navbar-default .navbar-brand {
